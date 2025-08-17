@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Class Timer Display</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/display.css') }}" />
+  <script>
+    window.APP_CONFIG = {
+      theme: "{{ theme }}"
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    <div id="gl-container"></div>
+    <div id="overlay">
+      <div class="timer" id="timer">00:00</div>
+      <div class="subline">
+        <span id="label">Idle</span>
+        <span id="ends"></span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      var cfg = window.APP_CONFIG || {}; var theme = (cfg.theme||'fire')+'';
+      var allowed = ['fire','liquid','frost','poison','fluid'];
+      theme = theme.toLowerCase();
+      if (theme === 'random' || allowed.indexOf(theme) === -1) {
+        theme = allowed[Math.floor(Math.random()*allowed.length)];
+      }
+      var map = {
+        fire: "{{ url_for('static', filename='js/fire_embers.js') }}",
+        liquid: "{{ url_for('static', filename='js/liquid_fire.js') }}",
+        frost: "{{ url_for('static', filename='js/frost_ice.js') }}",
+        poison: "{{ url_for('static', filename='js/poison_gas.js') }}",
+        fluid: "{{ url_for('static', filename='js/fluid_theme.js') }}"
+      };
+      var src = map[theme] || map.liquid;
+      // Avoid document.write which can disrupt parsing and script execution in some browsers
+      var s = document.createElement('script');
+      s.src = src;
+      s.defer = true;
+      document.head.appendChild(s);
+    })();
+  </script>
+  <script src="{{ url_for('static', filename='js/display.js') }}"></script>
+</body>
+</html>
